@@ -20,7 +20,8 @@ CI/CD lives in `.github/workflows/` in this same monorepo, with path filters per
 - Only `infra/terraform/` exists: versions.tf, variables.tf, server.tf, firewall.tf, outputs.tf.
 - Server, SSH key (`windhelm-root`) and firewall are **imported and managed by Terraform**; `plan` shows no changes. State is local for now (gitignored); later moving to an S3 backend.
 - Firewall: SSH (22) only from `admin_ips`; 80/443/ICMP public.
-- Next: rebuild the OS to Ubuntu 26.04 via `hcloud server rebuild` (outside Terraform), then bootstrap with Ansible.
+- OS rebuilt to Ubuntu 26.04 LTS (`hcloud server rebuild`, outside Terraform); root SSH on 22 with the `windhelm_root` key works.
+- Next: roadmap step 3, Ansible hardening + k3s.
 
 ## Hard rules
 - **The server must never be destroyed or replaced.** It's on a legacy price I want to keep. It has
