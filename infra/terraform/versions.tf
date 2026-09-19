@@ -1,0 +1,11 @@
+terraform {
+  required_version = "~> 1.16"
+  required_providers {
+    hcloud = {
+      source  = "hetznercloud/hcloud"
+      version = "~> 1.69"
+    }
+  }
+}
+
+provider "hcloud" {} # token comes from HCLOUD_TOKEN env var
