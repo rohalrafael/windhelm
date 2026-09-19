@@ -17,11 +17,15 @@ Prefer teaching over silently doing.
 CI/CD lives in `.github/workflows/` in this same monorepo, with path filters per layer.
 
 ## Current state
-- Only `infra/terraform/` exists: versions.tf, variables.tf, server.tf, firewall.tf, outputs.tf.
+- `infra/terraform/`: versions.tf, variables.tf, server.tf, firewall.tf, outputs.tf.
 - Server, SSH key (`windhelm-root`) and firewall are **imported and managed by Terraform**; `plan` shows no changes. State is local for now (gitignored); later moving to an S3 backend.
 - Firewall: SSH (22) only from `admin_ips`; 80/443/ICMP public.
-- OS rebuilt to Ubuntu 26.04 LTS (`hcloud server rebuild`, outside Terraform); root SSH on 22 with the `windhelm_root` key works.
-- Next: roadmap step 3, Ansible hardening + k3s.
+- OS is Ubuntu 26.04 LTS (rebuilt in place via `hcloud server rebuild`, outside Terraform).
+- `infra/ansible/`: dynamic hcloud inventory (needs `HCLOUD_TOKEN`), `playbooks/hardening.yml`, collections pinned in requirements.yml.
+  Applied: users `rafael` (human, sudo with password) and `deploy` (automation, key-only, NOPASSWD sudo);
+  root SSH and password auth disabled; unattended-upgrades; fail2ban with `ignoreip` from `TF_VAR_admin_ips`.
+  Run with `ansible-playbook playbooks/hardening.yml` (defaults to the `deploy` user).
+- Next: k3s, the second half of roadmap step 3.
 
 ## Hard rules
 - **The server must never be destroyed or replaced.** It's on a legacy price I want to keep. It has
